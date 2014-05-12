@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html> 
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scaleable=no">
+        <title>
+        </title>		
+		<!------------------>
+        <!-- CSS de juego -->
+        <!------------------>
+		
+        <link rel="stylesheet" href="css/jquery.mobile-1.2.0.min.css" />
+       		
+		<!------------------>
+        <!-- JS del juego -->
+        <!------------------>
+		
+        <script src="js/jquery-1.8.2.min.js"></script>
+        <script src="cordova-2.0.0.js"></script>
+        <script src="js/jquery.mobile-1.2.0.min.js"></script>
+        <script src="database/miller_db.js"></script>
+        
+        <!-------------------->
+		<!-- Control Scroll -->
+		<!-------------------->
+			
+		
+        <script type="text/javascript">
+            
+			window.addEventListener('load', function() {
+				document.body.addEventListener('touchmove', function(e) {
+					e.preventDefault();
+				}, false);
+			}, false);
+            
+            function playAudio(src) {
+                // Create Media object from src
+                my_media = new Media(src);
+                
+                // Play audio
+                my_media.play();
+            }
+		</script>
+        <style>
+            .ui-page { -webkit-backface-visibility: hidden; }
+        </style>
+    </head>
+    <body>
+        <!-- INICIO DEL JUEGO -->
+		<!------------------------------------------------------------------------>	
+		<!------------------------ Inicio del Juego  ----------------------------->	
+		<!------------------------------------------------------------------------>
+        <div data-role="page" data-theme="d" id="page14">
+			<script>
+				$('#page14').live('pageinit',function(){
+					Iniciarapp();
+                    
+                    $("#mod1").tap(function() {
+                    $(this).addClass("parte1Menu"); 
+                    });
+                   
+                    $("#mod2").tap(function() {
+                    $(this).addClass("parte1Menu");
+                    });
+				});
+                
+			</script>
+            <style>
+                .parte1Menu{
+                    position: relative;
+                    top: 3px;
+                    left: 5px;
+                    opacity: 0.8;
+                }
+                .popUP{
+                    padding: 45px;
+                }
+            </style>
+            <div data-role="content" style="padding:0px;">
+                <div data-role="content" style="padding:0px;">
+    				<div class="ui-grid-a" style="padding-bottom: 10px;">
+    					<div id="mod1" class="ui-block-a" style="margin-top: 0px; background:url('images/parte1.png') no-repeat;">
+    						<a onClick="playAudio('audios/pop.mp3');" href="#page5"  data-transition="slide">
+    							<div class="" style="width: 100%;
+                                    padding: 0px;
+                                    margin: 0px;
+                                    clear: both;
+                                    height: 768px;
+                                    border: solid rgba(128, 128, 128, 0.18) 1px;"></div>
+    						</a>
+    					</div>
+    					<div id="mod2" class="ui-block-b" style="margin-top:0px; background:url('images/parte2.png') no-repeat;">
+    						<a onClick="playAudio('audios/pop.mp3');" href="#page01" data-transition="slide">
+    							<div style="width: 100%;
+                                    padding: 0px;
+                                    margin: 0px;
+                                    clear: both;
+                                    height: 768px;
+                                    border: solid rgba(128, 128, 128, 0.18) 1px;"></div>
+    						</a>
+    					</div>
+    				</div>
+    			</div>
+            </div>
+        </div>
+        <!-- SUPER BOWL Lite -->
+        <!------------------------------------------------------------------------>	
+		<!------------------------Primera Oportunidad----------------------------->	
+		<!------------------------------------------------------------------------>
+        <div data-role="page" id="page01" style="background:url('images/fondoCascos1024x768.png') no-repeat;" data-transition="slide">
+			<script>
+				$( '#page01' ).live('pageinit',function(event){
+					DeleteNow();
+					RandomPreg();
+					RandomDrop();
+					var Opt6="";
+					db.transaction(function (tx) {
+						db = openDatabase(dbname, dbversion, dbdisplayName, 50 * 1024);  
+						tx.executeSql("SELECT E.id_equipo AS Id, E.nombre_equipo AS Nom,E.imagen AS img,E.descripcion AS desc FROM EQUIPOB AS E JOIN TEMPORAL AS T WHERE E.id_equipo = T.temp AND T.id_temp = ?", [1], function (tx, results){
+							$("#Imagen").attr('src',results.rows.item(0).img);
+							$("#Pista").text(results.rows.item(0).desc);
+							Opt6 = results.rows.item(0).Nom;
+							$("#oculto").val(Opt6);
+							var idValor = results.rows.item(0).Id;
+							seleccionar1(idValor,Opt6);
+						});
+					});
+                                    
+                                    $('#NG1').bind('click', function(){
+                                                   DeleteNow();
+                                                   RandomPreg();
+                                                   RandomDrop();
+                                                   setTimeout(
+                                                              function(){
+                                                              $("#mod1").removeClass("parte1Menu");
+                                                              $("#mod2").removeClass("parte1Menu");
+                                                              $.mobile.changePage( "#page14", { transition: "slide"});
+                                                              db.transaction(function (tx) {
+                                                                             db = openDatabase(dbname, dbversion, dbdisplayName, 50 * 1024);
+                                                                             //Reset pagina 1
+                                                                             tx.executeSql("SELECT E.id_equipo AS Id, E.nombre_equipo AS Nom,E.imagen AS img,E.descripcion AS desc FROM EQUIPOB AS E JOIN TEMPORAL AS T WHERE E.id_equipo = T.temp AND T.id_temp = ?", [1], function (tx, results){
+                                                                                           $("#Imagen").attr('src',results.rows.item(0).img);
+                                                                                           $("#Pista").text(results.rows.item(0).desc);
+                                                                                           Opt6 = results.rows.item(0).Nom;
+                                                                                           $("#oculto").val(Opt6);
+                                                                                           var idValor = results.rows.item(0).Id;
+                                                                                           var cmbAnswerBowl1 = $('#cmbresp');
+                                                                                           cmbAnswerBowl1.val('0opt').attr('selected', true).siblings('option').removeAttr('selected');
+                                                                                           cmbAnswerBowl1.selectmenu("refresh", true);
+                                                                                           seleccionar1(idValor,Opt6);
+                                                                                           });
+                                                                             });
+                                                                             
+                                                              }
+                                                              ,1500);
+                                                   });
+                                    
+					$('#cmbresp').bind('change', function(){
+                       
+						if($('#cmbresp option:selected').text() == $('#oculto').val()){	
+							playAudio('audios/fine.mp3');
+							$( "#popupPadded" ).popup( "open" );
+							DeleteNow();
+							RandomPreg();
+							RandomDrop();
+							setTimeout(
+								function(){
+                                    $("#mod1").removeClass("parte1Menu");
+                                    $("#mod2").removeClass("parte1Menu");
+									$.mobile.changePage( "#page14", { transition: "slide"});
+									db.transaction(function (tx) {
+										db = openDatabase(dbname, dbversion, dbdisplayName, 50 * 1024);      
+										tx.executeSql("SELECT E.id_equipo AS Id, E.nombre_equipo AS Nom,E.imagen AS img,E.descripcion AS desc FROM EQUIPOB AS E JOIN TEMPORAL AS T WHERE E.id_equipo = T.temp AND T.id_temp = ?", [1], function (tx, results){
+											$("#Imagen").attr('src',results.rows.item(0).img);
+											$("#Pista").text(results.rows.item(0).desc);
+											Opt6 = results.rows.item(0).Nom;
+											$("#oculto").val(Opt6);
+											var idValor = results.rows.item(0).Id;
+											var cmbAnswerBowl1 = $('#cmbresp');
+											cmbAnswerBowl1.val('0opt').attr('selected', true).siblings('option').removeAttr('selected');
+											cmbAnswerBowl1.selectmenu("refresh", true);
+											seleccionar1(idValor,Opt6);
+										});	
+									});	
+								}
+							,1500);	
+						}else{
+							playAudio('audios/error.mp3');
+							$( "#popupPadded1" ).popup( "open" );
+                            DeleteNow();
+                            RandomPreg();
+                            RandomDrop();
+							setTimeout(
+								function(){
+									$.mobile.changePage( "#page02", { transition: "slide"});
+                                       
+                                       db.transaction(function (tx) {
+                                                      db = openDatabase(dbname, dbversion, dbdisplayName, 50 * 1024);
+                                                      tx.executeSql("SELECT E.id_equipo AS Id, E.nombre_equipo AS Nom,E.imagen AS img,E.descripcion AS desc FROM EQUIPOB AS E JOIN TEMPORAL AS T WHERE E.id_equipo = T.temp AND T.id_temp = ?", [1], function (tx, results){
+                                                                    $("#Imagen").attr('src',results.rows.item(0).img);
+                                                                    $("#Pista").text(results.rows.item(0).desc);
+                                                                    Opt6 = results.rows.item(0).Nom;
+                                                                    $("#oculto").val(Opt6);
+                                                                    var idValor = results.rows.item(0).Id;
+                                                                    var cmbAnswerBowl1 = $('#cmbresp');
+                                                                    cmbAnswerBowl1.val('0opt').attr('selected', true).siblings('option').removeAttr('selected');
+                                                                    cmbAnswerBowl1.selectmenu("refresh", true);
+                                                                    seleccionar1(idValor,Opt6);
+                                                                    });	
+                                                      });
+                                       
+								}
+							,1500);		
+						}
+					});
+					
+					function seleccionar1(idValor,Opt6){
+						db.transaction(function (tx) {
+							db = openDatabase(dbname, dbversion, dbdisplayName, 50 * 1024); 
+							tx.executeSql("SELECT E.nombre_equipo AS Nombre FROM EQUIPOB AS E JOIN RANDOMDROPB AS R ON E.id_equipo = R.id_equipo AND R.id_equipo <> ?", [idValor], function (tx, results){						
+								var ArregloOpt1 = new Array();
+								ArregloOpt1[0] = results.rows.item(0).Nombre;
+								ArregloOpt1[1] = results.rows.item(1).Nombre;
+								ArregloOpt1[2] = results.rows.item(2).Nombre;
+								ArregloOpt1[3] = results.rows.item(3).Nombre;
+								ArregloOpt1[4] = results.rows.item(4).Nombre;
+								ArregloOpt1[5] = Opt6;
+								ArregloOpt1[6] = results.rows.item(5).Nombre;
+								
+								var numAleatorios = [];
+								var max = 6;
+								var aleatorio = 0;  
+								var j =1;     
+								for (i = 0; i <= 5; i++){
+									do {
+										aleatorio = Math.floor((Math.random()*max)+1);
+									} while ($.inArray(aleatorio,numAleatorios)!="-1");
+										numAleatorios.push(aleatorio);
+										$("#"+j+"opt").text(ArregloOpt1[aleatorio]);
+										j++;
+								}	
+							});
+						});
+					}					
+				});	
+			</script>
+			<div data-theme="a" data-role="header" data-position="fixed">
+                <a id="NG1" onClick="playAudio('audios/pop.mp3');" data-role="button" data-icon="star" data-iconpos="right" class="ui-btn-right">
+                    NEW GAME
+                </a>
+				<h3>
+					Super Bowl Lite
+				</h3>
+			</div>
+			<input type="hidden" id="oculto" value="" />
+			<div data-role="content">
+				<div style="width: 450px; height: 450px; position: relative; left: 250px; top: -25; overflow: hidden;">
+					<img src="" style="position: absolute; height: 450px;"id="Imagen">
+				</div>
+				<p id="Pista" style="font-size:18px; line-height: 32px; text-align:center; font-weight:bold; margin: 0px 80px 40px 80px;color: white; text-shadow: 9px 7px 10px black; text-transform: uppercase;">
+					...
+				</p>
+				<div data-role="fieldcontain" style="width:50%; margin-left:34%;">
+					<select onClick="playAudio('audios/pop.mp3');" name="" data-mini="true" id="cmbresp">
+						<option id="0opt">	
+							CHOOSE AN OPTION
+						</option>
+						<option id="1opt"></option>
+						<option id="2opt"></option>
+						<option id="3opt"></option>
+						<option id="4opt"></option>
+						<option id="5opt"></option>
+						<option id="6opt"></option>
+					</select>
+				</div>
+			</div>
+			<div data-role="popup" id="popupPadded" class="ui-content popUP">
+				<p style="text-align: center;font-weight: bold;font-size: 30px;">YOU WON</p>
+			</div>
+			
+			<div data-role="popup" id="popupPadded1" class="ui-content popUP">
+				<p style="text-align: center;font-weight: bold;font-size: 30px;">YOU FAIL</p>
+				<p style="text-align: center;font-weight: bold;font-size: 20px;">YOU HAVE 2 CHANCES</p>
+			</div>
+		</div>		
+		<!------------------------------------------------------------------------>	
+		<!-------------------------Segunda Oportunidad---------------------------->	
+		<!------------------------------------------------------------------------>		
+		<div data-role="page" id="page02" style="background:url('images/fondoCascos1024x768.png') no-repeat;">
+			<script>
+				$( '#page02' ).live('pageinit',function(event){                    
+					var Opt7;
+					var idValor1;	
+					db.transaction(function (tx) {
+						db = openDatabase(dbname, dbversion, dbdisplayName, 50 * 1024);      
+						tx.executeSql("SELECT E.id_equipo AS Id,E.nombre_equipo AS Nom,E.imagen AS img,E.descripcion AS desc FROM EQUIPOB AS E JOIN TEMPORAL AS T WHERE E.id_equipo = T.temp AND T.id_temp = ?", [2], function (tx, results){
+							$("#Imagen2").attr('src',results.rows.item(0).img);
+							$("#Pista2").text(results.rows.item(0).desc);
+							Opt7 = results.rows.item(0).Nom;
+							$("#oculto2").val(Opt7);
+							var idValor1 = results.rows.item(0).Id;						
+							seleccionar2(idValor1, Opt7);
+						});	
+					});
+                                    
+                                    $('#NG2').bind('click', function(){
+                                                   DeleteNow();
+                                                   RandomPreg();
+                                                   RandomDrop();
+                                                   setTimeout(
+                                                              function(){
+                                                              $("#mod1").removeClass("parte1Menu");
+                                                              $("#mod2").removeClass("parte1Menu");
+                                                              $.mobile.changePage( "#page14", { transition: "slide"});
+                                                              db.transaction(function (tx) {
+                                                                             db = openDatabase(dbname, dbversion, dbdisplayName, 50 * 1024);
+                                                                             //Reset pagina 1
+                                                                             tx.executeSql("SELECT E.id_equipo AS Id, E.nombre_equipo AS Nom,E.imagen AS img,E.descripcion AS desc FROM EQUIPOB AS E JOIN TEMPORAL AS T WHERE E.id_equipo = T.temp AND T.id_temp = ?", [1], function (tx, results){
+                                                                                           $("#Imagen").attr('src',results.rows.item(0).img);
+                                                                                           $("#Pista").text(results.rows.item(0).desc);
+                                                                                           Opt6 = results.rows.item(0).Nom;
+                                                                                           $("#oculto").val(Opt6);
+                                                                                           var idValor = results.rows.item(0).Id;
+                                                                                           var cmbAnswerBowl1 = $('#cmbresp');
+                                                                                           cmbAnswerBowl1.val('0opt').attr('selected', true).siblings('option').removeAttr('selected');
+                                                                                           cmbAnswerBowl1.selectmenu("refresh", true);
+                                                                                           seleccionar1(idValor,Opt6);
+                                                                                           });
+                                                                             
+                                                                             //Reset pagina 2
+                                                                             tx.executeSql("SELECT E.id_equipo AS Id, E.nombre_equipo AS Nom,E.imagen AS img,E.descripcion AS desc FROM EQUIPOB AS E JOIN TEMPORAL AS T WHERE E.id_equipo = T.temp AND T.id_temp = ?", [2], function (tx, results){
+                                                                                           $("#Imagen2").attr('src',results.rows.item(0).img);
+                                                                                           $("#Pista2").text(results.rows.item(0).desc);
+                                                                                           Opt7 = results.rows.item(0).Nom;
+                                                                                           $("#oculto2").val(Opt7);
+                                                                                           var idValor = results.rows.item(0).Id;
+                                                                                           var cmbAnswerBowl1 = $('#cmbresp2');
+                                                                                           cmbAnswerBowl1.val('0opt2').attr('selected', true).siblings('option').removeAttr('selected');
+                                                                                           cmbAnswerBowl1.selectmenu("refresh", true);
+                                                                                           seleccionar2(idValor,Opt7);
+                                                                                           });
+                                                                             });
+                                                              }
+                                                              ,1500);
+                                                   });
+
+					$('#cmbresp2').bind('change', function(){
+						if($('#cmbresp2 option:selected').text() == $('#oculto2').val()){	
+							playAudio('audios/fine.mp3');
+							$( "#popupPadded2" ).popup( "open" );
+							DeleteNow();
+							RandomPreg();
+							RandomDrop();
+							setTimeout(
+								function(){
+                                    $("#mod1").removeClass("parte1Menu");
+                                    $("#mod2").removeClass("parte1Menu");
+									$.mobile.changePage( "#page14", { transition: "slide"});
+									db.transaction(function (tx) {
+										db = openDatabase(dbname, dbversion, dbdisplayName, 50 * 1024);      
+										//Reset pagina 1
+										tx.executeSql("SELECT E.id_equipo AS Id, E.nombre_equipo AS Nom,E.imagen AS img,E.descripcion AS desc FROM EQUIPOB AS E JOIN TEMPORAL AS T WHERE E.id_equipo = T.temp AND T.id_temp = ?", [1], function (tx, results){
+											$("#Imagen").attr('src',results.rows.item(0).img);
+											$("#Pista").text(results.rows.item(0).desc);
+											Opt6 = results.rows.item(0).Nom;
+											$("#oculto").val(Opt6);
+											var idValor = results.rows.item(0).Id;
+											var cmbAnswerBowl1 = $('#cmbresp');
+											cmbAnswerBowl1.val('0opt').attr('selected', true).siblings('option').removeAttr('selected');
+											cmbAnswerBowl1.selectmenu("refresh", true);
+											seleccionar1(idValor,Opt6);
+										});	
+										
+										//Reset pagina 2
+										tx.executeSql("SELECT E.id_equipo AS Id, E.nombre_equipo AS Nom,E.imagen AS img,E.descripcion AS desc FROM EQUIPOB AS E JOIN TEMPORAL AS T WHERE E.id_equipo = T.temp AND T.id_temp = ?", [2], function (tx, results){
+											$("#Imagen2").attr('src',results.rows.item(0).img);
+											$("#Pista2").text(results.rows.item(0).desc);
+											Opt7 = results.rows.item(0).Nom;
+											$("#oculto2").val(Opt7);
+											var idValor = results.rows.item(0).Id;
+											var cmbAnswerBowl1 = $('#cmbresp2');
+											cmbAnswerBowl1.val('0opt2').attr('selected', true).siblings('option').removeAttr('selected');
+											cmbAnswerBowl1.selectmenu("refresh", true);
+											seleccionar2(idValor,Opt7);
+										});	
+									});	
+								}
+							,1500);											
+						}else{
+							playAudio('audios/error.mp3');
+							$( "#popupPadded3" ).popup( "open" );
+                            DeleteNow();
+                            RandomPreg();
+                            RandomDrop();
+							setTimeout(
+								function(){
+									$.mobile.changePage( "#page03", { transition: "slide"});
+                                       
+                                       db.transaction(function (tx) {
+                                                      db = openDatabase(dbname, dbversion, dbdisplayName, 50 * 1024);
+                                                      //Reset pagina 1
+                                                      tx.executeSql("SELECT E.id_equipo AS Id, E.nombre_equipo AS Nom,E.imagen AS img,E.descripcion AS desc FROM EQUIPOB AS E JOIN TEMPORAL AS T WHERE E.id_equipo = T.temp AND T.id_temp = ?", [1], function (tx, results){
+                                                                    $("#Imagen").attr('src',results.rows.item(0).img);
+                                                                    $("#Pista").text(results.rows.item(0).desc);
+                                                                    Opt6 = results.rows.item(0).Nom;
+                                                                    $("#oculto").val(Opt6);
+                                                                    var idValor = results.rows.item(0).Id;
+                                                                    var cmbAnswerBowl1 = $('#cmbresp');
+                                                                    cmbAnswerBowl1.val('0opt').attr('selected', true).siblings('option').removeAttr('selected');
+                                                                    cmbAnswerBowl1.selectmenu("refresh", true);
+                                                                    seleccionar1(idValor,Opt6);
+                                                                    });
+                                                      
+                                                      //Reset pagina 2
+                                                      tx.executeSql("SELECT E.id_equipo AS Id, E.nombre_equipo AS Nom,E.imagen AS img,E.descripcion AS desc FROM EQUIPOB AS E JOIN TEMPORAL AS T WHERE E.id_equipo = T.temp AND T.id_temp = ?", [2], function (tx, results){
+                                                                    $("#Imagen2").attr('src',results.rows.item(0).img);
+                                                                    $("#Pista2").text(results.rows.item(0).desc);
+                                                                    Opt7 = results.rows.item(0).Nom;
+                                                                    $("#oculto2").val(Opt7);
+                                                                    var idValor = results.rows.item(0).Id;
+                                                                    var cmbAnswerBowl1 = $('#cmbresp2');
+                                                                    cmbAnswerBowl1.val('0opt2').attr('selected', true).siblings('option').removeAttr('selected');
+                                                                    cmbAnswerBowl1.selectmenu("refresh", true);
+                                                                    seleccionar2(idValor,Opt7);
+                                                                    });	
+                                                      });
+                                       
+								}
+							,1500);		
+						}
+					});
+                                    
+                                    function seleccionar1(idValor,Opt6){
+                                    db.transaction(function (tx) {
+                                                   db = openDatabase(dbname, dbversion, dbdisplayName, 50 * 1024);
+                                                   tx.executeSql("SELECT E.nombre_equipo AS Nombre FROM EQUIPOB AS E JOIN RANDOMDROPB AS R ON E.id_equipo = R.id_equipo AND R.id_equipo <> ?", [idValor], function (tx, results){
+                                                                 var ArregloOpt1 = new Array();
+                                                                 ArregloOpt1[0] = results.rows.item(0).Nombre;
+                                                                 ArregloOpt1[1] = results.rows.item(1).Nombre;
+                                                                 ArregloOpt1[2] = results.rows.item(2).Nombre;
+                                                                 ArregloOpt1[3] = results.rows.item(3).Nombre;
+                                                                 ArregloOpt1[4] = results.rows.item(4).Nombre;
+                                                                 ArregloOpt1[5] = Opt6;
+                                                                 ArregloOpt1[6] = results.rows.item(5).Nombre;
+                                                                 
+                                                                 var numAleatorios = [];
+                                                                 var max = 6;
+                                                                 var aleatorio = 0;  
+                                                                 var j =1;     
+                                                                 for (i = 0; i <= 5; i++){
+                                                                 do {
+                                                                 aleatorio = Math.floor((Math.random()*max)+1);
+                                                                 } while ($.inArray(aleatorio,numAleatorios)!="-1");
+                                                                 numAleatorios.push(aleatorio);
+                                                                 $("#"+j+"opt").text(ArregloOpt1[aleatorio]);
+                                                                 j++;
+                                                                 }	
+                                                                 });
+                                                   });
+                                    }
+					
+					function seleccionar2(idValor1, Opt7){
+						db.transaction(function (tx) {
+							db = openDatabase(dbname, dbversion, dbdisplayName, 50 * 1024);
+							tx.executeSql("SELECT E.nombre_equipo AS Nombre FROM EQUIPOB AS E JOIN RANDOMDROPB AS R ON E.id_equipo = R.id_equipo AND R.id_equipo <> ?", [idValor1], function (tx, results){						
+								var ArregloOpt2 = new Array();
+								ArregloOpt2[0] = results.rows.item(0).Nombre;
+								ArregloOpt2[1] = results.rows.item(1).Nombre;
+								ArregloOpt2[2] = results.rows.item(2).Nombre;
+								ArregloOpt2[3] = results.rows.item(3).Nombre;
+								ArregloOpt2[4] = results.rows.item(4).Nombre;
+								ArregloOpt2[5] = Opt7;
+								ArregloOpt2[6] = results.rows.item(5).Nombre;
+								
+								var numAleatorios = [];
+								var max = 6;
+								var aleatorio = 0;  
+								var j =1;      
+								for (i = 0; i <= 5; i++){
+									do {
+										aleatorio = Math.floor((Math.random()*max)+1);
+									} while ($.inArray(aleatorio,numAleatorios)!="-1");
+										numAleatorios.push(aleatorio);
+										$("#"+j+"opt2").text(ArregloOpt2[aleatorio]);
+										j++;
+								}								
+							});
+						});
+					}
+				});	
+            </script>
+            <div data-theme="a" data-role="header" data-position="fixed">
+                <a id="NG2" onClick="playAudio('audios/pop.mp3');" data-role="button" data-icon="star" data-iconpos="right" class="ui-btn-right">
+                    NEW GAME
+                </a>
+                <h3>
+                    Super Bowl Lite
+                </h3>
+            </div>
+			<input type="hidden" id="oculto2" value="" />
+            <div data-role="content">
+                <div style="width: 450px; height: 450px; position: relative; left: 250px; top: -25; overflow: hidden;">
+                    <img src="" style="position: absolute; height: 450px;"id="Imagen2">
+                </div>				
+                <p id="Pista2" style="font-size:18px; line-height: 32px; text-align:center; font-weight:bold; margin: 0px 80px 40px 80px;color: white; text-shadow: 9px 7px 10px black; text-transform: uppercase;">
+                    ...
+                </p>				
+                <div data-role="fieldcontain" style="width:50%; margin-left:34%;">
+					<select onClick="playAudio('audios/pop.mp3');" name="" data-mini="true" id="cmbresp2">
+						<option id="0opt2">	
+							CHOOSE A OPTION						
+                        </option>
+						<option id="1opt2"></option>
+						<option id="2opt2"></option>
+						<option id="3opt2"></option>
+						<option id="4opt2"></option>
+						<option id="5opt2"></option>
+						<option id="6opt2"></option>
+					</select>
+                </div>
+            </div>			
+			<div data-role="popup" id="popupPadded2" class="ui-content popUP">
+				<p style="text-align: center;font-weight: bold;font-size: 30px;">YOU WON</p>
+			</div>			
+			<div data-role="popup" id="popupPadded3" class="ui-content popUP">
+				<p style="text-align: center;font-weight: bold;font-size: 30px;">YOU FAIL</p>
+				<p style="text-align: center;font-weight: bold;font-size: 20px;">YOU HAVE A CHANCE</p>
+			</div>			
+        </div>		
+		<!------------------------------------------------------------------------>	
+		<!------------------------Tercera Oportunidad----------------------------->	
+		<!------------------------------------------------------------------------>		
+		<div data-role="page" id="page03" style="background:url('images/fondoCascos1024x768.png') no-repeat;">
+			<script>
+				$( '#page03' ).live('pageinit',function(event){                    
+					var Opt8;
+					var idValor3;
+
+					db.transaction(function (tx) {
+						db = openDatabase(dbname, dbversion, dbdisplayName, 50 * 1024);      
+						tx.executeSql("SELECT E.id_equipo AS Id,E.nombre_equipo AS Nom,E.imagen AS img,E.descripcion AS desc FROM EQUIPOB AS E JOIN TEMPORAL AS T WHERE E.id_equipo = T.temp AND T.id_temp = ?", [3], function (tx, results){
+							$("#Imagen3").attr('src',results.rows.item(0).img);
+							$("#Pista3").text(results.rows.item(0).desc);
+							Opt8 = results.rows.item(0).Nom;
+							$("#oculto3").val(Opt8);
+							var idValor3 = results.rows.item(0).Id;					
+							seleccionar3(idValor3, Opt8);
+						});	
+					});
+                                    
+                    $('#NG3').bind('click', function(){ 
+                    DeleteNow();
+                    RandomPreg();
+                    RandomDrop();
+                        setTimeout(
+                            function(){
+                            $("#mod1").removeClass("parte1Menu");
+                            $("#mod2").removeClass("parte1Menu");
+                            $.mobile.changePage( "#page14", { transition: "slide"});
+                            db.transaction(function (tx) {
+                                db = openDatabase(dbname, dbversion, dbdisplayName, 50 * 1024);
+                                    //Reset pagina 1
+                                    tx.executeSql("SELECT E.id_equipo AS Id, E.nombre_equipo AS Nom,E.imagen AS img,E.descripcion AS desc FROM EQUIPOB AS E JOIN TEMPORAL AS T WHERE E.id_equipo = T.temp AND T.id_temp = ?", [1], function (tx, results){
+                                            $("#Imagen").attr('src',results.rows.item(0).img);
+                                            $("#Pista").text(results.rows.item(0).desc);
+                                              Opt6 = results.rows.item(0).Nom;
+                                            $("#oculto").val(Opt6);
+                                            var idValor = results.rows.item(0).Id;
+                                            var cmbAnswerBowl1 = $('#cmbresp');
+                                                                            cmbAnswerBowl1.val('0opt').attr('selected', true).siblings('option').removeAttr('selected');
+                                                                            cmbAnswerBowl1.selectmenu("refresh", true);
+                                                                            seleccionar1(idValor,Opt6);
+                                                                            });
+                                                              
+                                                              //Reset pagina 2
+                                                              tx.executeSql("SELECT E.id_equipo AS Id, E.nombre_equipo AS Nom,E.imagen AS img,E.descripcion AS desc FROM EQUIPOB AS E JOIN TEMPORAL AS T WHERE E.id_equipo = T.temp AND T.id_temp = ?", [2], function (tx, results){
+                                                                            $("#Imagen2").attr('src',results.rows.item(0).img);
+                                                                            $("#Pista2").text(results.rows.item(0).desc);
+                                                                            Opt7 = results.rows.item(0).Nom;
+                                                                            $("#oculto2").val(Opt7);
+                                                                            var idValor = results.rows.item(0).Id;
+                                                                            var cmbAnswerBowl1 = $('#cmbresp2');
+                                                                            cmbAnswerBowl1.val('0opt2').attr('selected', true).siblings('option').removeAttr('selected');
+                                                                            cmbAnswerBowl1.selectmenu("refresh", true);
+                                                                            seleccionar2(idValor,Opt7);
+                                                                            });	
+                                                              
+                                                              //Reset pagina 3      
+                                                              tx.executeSql("SELECT E.id_equipo AS Id, E.nombre_equipo AS Nom,E.imagen AS img,E.descripcion AS desc FROM EQUIPOB AS E JOIN TEMPORAL AS T WHERE E.id_equipo = T.temp AND T.id_temp = ?", [3], function (tx, results){
+                                                                            $("#Imagen3").attr('src',results.rows.item(0).img);
+                                                                            $("#Pista3").text(results.rows.item(0).desc);
+                                                                            Opt8 = results.rows.item(0).Nom;
+                                                                            $("#oculto3").val(Opt8);
+                                                                            var idValor = results.rows.item(0).Id;
+                                                                            var cmbAnswerBowl1 = $('#cmbresp3');
+                                                                            cmbAnswerBowl1.val('0opt3').attr('selected', true).siblings('option').removeAttr('selected');
+                                                                            cmbAnswerBowl1.selectmenu("refresh", true);
+                                                                            seleccionar3(idValor,Opt8);
+                                                                            });		
+                                                              });	
+                                               }
+                                               ,1500);
+                                        });
+					
+					$('#cmbresp3').bind('change', function(){
+						if($('#cmbresp3 option:selected').text() == $('#oculto3').val()){
+							playAudio('audios/fine.mp3');
+							$( "#popupPadded4" ).popup( "open" );	
+							DeleteNow();
+							RandomPreg();
+							RandomDrop();
+							setTimeout(
+								function(){
+                                    $("#mod1").removeClass("parte1Menu");
+                                    $("#mod2").removeClass("parte1Menu");
+									$.mobile.changePage( "#page14", { transition: "slide"});
+									db.transaction(function (tx) {
+										db = openDatabase(dbname, dbversion, dbdisplayName, 50 * 1024);      
+										//Reset pagina 1
+										tx.executeSql("SELECT E.id_equipo AS Id, E.nombre_equipo AS Nom,E.imagen AS img,E.descripcion AS desc FROM EQUIPOB AS E JOIN TEMPORAL AS T WHERE E.id_equipo = T.temp AND T.id_temp = ?", [1], function (tx, results){
+											$("#Imagen").attr('src',results.rows.item(0).img);
+											$("#Pista").text(results.rows.item(0).desc);
+											Opt6 = results.rows.item(0).Nom;
+											$("#oculto").val(Opt6);
+											var idValor = results.rows.item(0).Id;
+											var cmbAnswerBowl1 = $('#cmbresp');
+											cmbAnswerBowl1.val('0opt').attr('selected', true).siblings('option').removeAttr('selected');
+											cmbAnswerBowl1.selectmenu("refresh", true);
+											seleccionar1(idValor,Opt6);
+										});	
+										
+										//Reset pagina 2
+										tx.executeSql("SELECT E.id_equipo AS Id, E.nombre_equipo AS Nom,E.imagen AS img,E.descripcion AS desc FROM EQUIPOB AS E JOIN TEMPORAL AS T WHERE E.id_equipo = T.temp AND T.id_temp = ?", [2], function (tx, results){
+											$("#Imagen2").attr('src',results.rows.item(0).img);
+											$("#Pista2").text(results.rows.item(0).desc);
+											Opt7 = results.rows.item(0).Nom;
+											$("#oculto2").val(Opt7);
+											var idValor = results.rows.item(0).Id;
+											var cmbAnswerBowl2 = $('#cmbresp2');
+											cmbAnswerBowl2.val('0opt2').attr('selected', true).siblings('option').removeAttr('selected');
+											cmbAnswerBowl2.selectmenu("refresh", true);
+											seleccionar2(idValor,Opt7);
+										});	
+										
+										//Reset pagina 3      
+										tx.executeSql("SELECT E.id_equipo AS Id, E.nombre_equipo AS Nom,E.imagen AS img,E.descripcion AS desc FROM EQUIPOB AS E JOIN TEMPORAL AS T WHERE E.id_equipo = T.temp AND T.id_temp = ?", [3], function (tx, results){
+											$("#Imagen3").attr('src',results.rows.item(0).img);
+											$("#Pista3").text(results.rows.item(0).desc);
+											Opt8 = results.rows.item(0).Nom;
+											$("#oculto3").val(Opt8);
+											var idValor = results.rows.item(0).Id;
+											var cmbAnswerBowl3 = $('#cmbresp3');
+											cmbAnswerBowl3.val('0opt3').attr('selected', true).siblings('option').removeAttr('selected');
+											cmbAnswerBowl3.selectmenu("refresh", true);
+											seleccionar3(idValor,Opt8);
+										});		
+									});	
+								}
+							,1500);											
+						}else{
+							playAudio('audios/error.mp3');
+							$( "#popupPadded5" ).popup( "open" );
+							DeleteNow();
+							RandomPreg();
+							RandomDrop();
+							setTimeout(
+								function(){
+                                    $("#mod1").removeClass("parte1Menu");
+                                    $("#mod2").removeClass("parte1Menu");
+									$.mobile.changePage( "#page14", { transition: "slide"});
+									db.transaction(function (tx) {
+										db = openDatabase(dbname, dbversion, dbdisplayName, 50 * 1024);      
+										//Reset pagina 1
+										tx.executeSql("SELECT E.id_equipo AS Id, E.nombre_equipo AS Nom,E.imagen AS img,E.descripcion AS desc FROM EQUIPOB AS E JOIN TEMPORAL AS T WHERE E.id_equipo = T.temp AND T.id_temp = ?", [1], function (tx, results){
+											$("#Imagen").attr('src',results.rows.item(0).img);
+											$("#Pista").text(results.rows.item(0).desc);
+											Opt6 = results.rows.item(0).Nom;
+											$("#oculto").val(Opt6);
+											var idValor = results.rows.item(0).Id;
+											var cmbAnswerBowl1 = $('#cmbresp');
+											cmbAnswerBowl1.val('0opt').attr('selected', true).siblings('option').removeAttr('selected');
+											cmbAnswerBowl1.selectmenu("refresh", true);
+											seleccionar1(idValor,Opt6);
+										});	
+										
+										//Reset pagina 2
+										tx.executeSql("SELECT E.id_equipo AS Id, E.nombre_equipo AS Nom,E.imagen AS img,E.descripcion AS desc FROM EQUIPOB AS E JOIN TEMPORAL AS T WHERE E.id_equipo = T.temp AND T.id_temp = ?", [2], function (tx, results){
+											$("#Imagen2").attr('src',results.rows.item(0).img);
+											$("#Pista2").text(results.rows.item(0).desc);
+											Opt7 = results.rows.item(0).Nom;
+											$("#oculto2").val(Opt7);
+											var idValor = results.rows.item(0).Id;
+											var cmbAnswerBowl2 = $('#cmbresp2');
+											cmbAnswerBowl2.val('0opt2').attr('selected', true).siblings('option').removeAttr('selected');
+											cmbAnswerBowl2.selectmenu("refresh", true);
+											seleccionar2(idValor,Opt7);
+										});	
+										
+										//Reset pagina 3      
+										tx.executeSql("SELECT E.id_equipo AS Id, E.nombre_equipo AS Nom,E.imagen AS img,E.descripcion AS desc FROM EQUIPOB AS E JOIN TEMPORAL AS T WHERE E.id_equipo = T.temp AND T.id_temp = ?", [3], function (tx, results){
+											$("#Imagen3").attr('src',results.rows.item(0).img);
+											$("#Pista3").text(results.rows.item(0).desc);
+											Opt8 = results.rows.item(0).Nom;
+											$("#oculto3").val(Opt8);
+											var idValor = results.rows.item(0).Id;
+											var cmbAnswerBowl3 = $('#cmbresp3');
+											cmbAnswerBowl3.val('0opt3').attr('selected', true).siblings('option').removeAttr('selected');
+											cmbAnswerBowl3.selectmenu("refresh", true);
+											seleccionar3(idValor,Opt8);
+										});		
+									});	
+								}
+							,1500);		
+						}
+					});
+                    
+                                    function seleccionar1(idValor,Opt6){
+                                    db.transaction(function (tx) {
+                                                   db = openDatabase(dbname, dbversion, dbdisplayName, 50 * 1024);
+                                                   tx.executeSql("SELECT E.nombre_equipo AS Nombre FROM EQUIPOB AS E JOIN RANDOMDROPB AS R ON E.id_equipo = R.id_equipo AND R.id_equipo <> ?", [idValor], function (tx, results){
+                                                                 var ArregloOpt1 = new Array();
+                                                                 ArregloOpt1[0] = results.rows.item(0).Nombre;
+                                                                 ArregloOpt1[1] = results.rows.item(1).Nombre;
+                                                                 ArregloOpt1[2] = results.rows.item(2).Nombre;
+                                                                 ArregloOpt1[3] = results.rows.item(3).Nombre;
+                                                                 ArregloOpt1[4] = results.rows.item(4).Nombre;
+                                                                 ArregloOpt1[5] = Opt6;
+                                                                 ArregloOpt1[6] = results.rows.item(5).Nombre;
+                                                                 
+                                                                 var numAleatorios = [];
+                                                                 var max = 6;
+                                                                 var aleatorio = 0;
+                                                                 var j =1;
+                                                                 for (i = 0; i <= 5; i++){
+                                                                 do {
+                                                                 aleatorio = Math.floor((Math.random()*max)+1);
+                                                                 } while ($.inArray(aleatorio,numAleatorios)!="-1");
+                                                                 numAleatorios.push(aleatorio);
+                                                                 $("#"+j+"opt").text(ArregloOpt1[aleatorio]);
+                                                                 j++;
+                                                                 }
+                                                                 });
+                                                   });
+                                    }
+                                    
+                                    function seleccionar2(idValor1, Opt7){
+                                    db.transaction(function (tx) {
+                                                   db = openDatabase(dbname, dbversion, dbdisplayName, 50 * 1024);
+                                                   tx.executeSql("SELECT E.nombre_equipo AS Nombre FROM EQUIPOB AS E JOIN RANDOMDROPB AS R ON E.id_equipo = R.id_equipo AND R.id_equipo <> ?", [idValor1], function (tx, results){
+                                                                 var ArregloOpt2 = new Array();
+                                                                 ArregloOpt2[0] = results.rows.item(0).Nombre;
+                                                                 ArregloOpt2[1] = results.rows.item(1).Nombre;
+                                                                 ArregloOpt2[2] = results.rows.item(2).Nombre;
+                                                                 ArregloOpt2[3] = results.rows.item(3).Nombre;
+                                                                 ArregloOpt2[4] = results.rows.item(4).Nombre;
+                                                                 ArregloOpt2[5] = Opt7;
+                                                                 ArregloOpt2[6] = results.rows.item(5).Nombre;
+                                                                 
+                                                                 var numAleatorios = [];
+                                                                 var max = 6;
+                                                                 var aleatorio = 0;  
+                                                                 var j =1;      
+                                                                 for (i = 0; i <= 5; i++){
+                                                                 do {
+                                                                 aleatorio = Math.floor((Math.random()*max)+1);
+                                                                 } while ($.inArray(aleatorio,numAleatorios)!="-1");
+                                                                 numAleatorios.push(aleatorio);
+                                                                 $("#"+j+"opt2").text(ArregloOpt2[aleatorio]);
+                                                                 j++;
+                                                                 }								
+                                                                 });
+                                                   });
+                                    }
+
+					
+					function seleccionar3(idValor3, Opt8){
+						db.transaction(function (tx) {
+							db = openDatabase(dbname, dbversion, dbdisplayName, 50 * 1024);
+							tx.executeSql("SELECT E.nombre_equipo AS Nombre FROM EQUIPOB AS E JOIN RANDOMDROPB AS R ON E.id_equipo = R.id_equipo AND R.id_equipo <> ?", [idValor3], function (tx, results){						
+								var ArregloOpt3 = new Array();
+								ArregloOpt3[0] = results.rows.item(0).Nombre;
+								ArregloOpt3[1] = results.rows.item(1).Nombre;
+								ArregloOpt3[2] = results.rows.item(2).Nombre;
+								ArregloOpt3[3] = results.rows.item(3).Nombre;
+								ArregloOpt3[4] = results.rows.item(4).Nombre;
+								ArregloOpt3[5] = Opt8;
+								ArregloOpt3[6] = results.rows.item(5).Nombre;
+								
+								var numAleatorios = [];
+								var max = 6;
+								var aleatorio = 0;  
+								var j =1;    
+								for (i = 0; i <= 5; i++){
+									do {
+										aleatorio = Math.floor((Math.random()*max)+1);
+									} while ($.inArray(aleatorio,numAleatorios)!="-1");
+										numAleatorios.push(aleatorio);
+										$("#"+j+"opt3").text(ArregloOpt3[aleatorio]);
+										j++;
+								}
+							});
+						});
+					}						
+				});
+			</script>
+            <div data-theme="a" data-role="header" data-position="fixed">
+                <a id="NG3" onClick="playAudio('audios/pop.mp3');" data-role="button" data-icon="star" data-iconpos="right" class="ui-btn-right">
+                    NEW GAME
+                </a>
+                <h3>
+                    Super Bowl Lite
+                </h3>
+            </div>
+			<input type="hidden" id="oculto3" value="" />
+            <div data-role="content">
+                <div style="width: 450px; height: 450px; position: relative; left: 250px; top: -25; overflow: hidden;">
+                    <img src="" style="position: absolute; height: 450px;"id="Imagen3">
+                </div>				
+                <p id="Pista3" style="font-size:18px; line-height: 32px; text-align:center; font-weight:bold; margin: 0px 80px 40px 80px;color: white; text-shadow: 9px 7px 10px black; text-transform: uppercase;">
+                    ...
+                </p>				
+                <div data-role="fieldcontain" style="width:50%; margin-left:34%;">
+					<select onClick="playAudio('audios/pop.mp3');" name="" data-mini="true" id="cmbresp3" >
+						<option id="0opt3">	
+							CHOOSE AN OPTION
+                        </option>
+						<option id="1opt3"></option>
+						<option id="2opt3"></option>
+						<option id="3opt3"></option>
+						<option id="4opt3"></option>
+						<option id="5opt3"></option>
+						<option id="6opt3"></option>
+					</select>
+                </div>
+            </div>			
+			<div data-role="popup" id="popupPadded4" class="ui-content popUP">
+				<p style="text-align: center;font-weight: bold;font-size: 30px;">YOU WON</p>
+			</div>			
+			<div data-role="popup" id="popupPadded5" class="ui-content popUP">
+				<p style="text-align: center;font-weight: bold;font-size: 30px;">YOU LOSE</p>
+			</div>			
+        </div>
+        <!-- LOGOS QUIZ -->
+		<!------------------------------------------------------------------------>	
+		<!------------------------Juego de Logos Quiz----------------------------->	
+		<!------------------------------------------------------------------------>
+        <div data-role="page" id="page5" style="background:url('images/fondoLogos1024x768.png') no-repeat">
+            <!-- SCRIPTS DE LOS ELEMENTOS -->
+			<script>
+                $('#page5').live('pageinit', function(){
+                    /* == INICIAMOS JUEGO == */
+                    $('#intentos').text('3 CHANCES');
+                    //Iniciamos los random y los elementos
+                    DeleteRandom();
+                    Random();
+                    db.transaction(function (selects) {				      
+            		    db = openDatabase(dbname, dbversion, dbdisplayName, 50 * 1024);
+                        SQL = "SELECT E.imagenM FROM RANDOM AS R INNER JOIN EQUIPO AS E ON E.id_equipo = R.id_equipo";
+            			selects.executeSql(SQL, [], function (selects, results1){
+							$("#img1").attr("src", results1.rows.item(0).imagenM);
+                            $("#img2").attr("src", results1.rows.item(1).imagenM);
+                            $("#img3").attr("src", results1.rows.item(2).imagenM);
+                            $("#img4").attr("src", results1.rows.item(3).imagenM);
+                            $("#img5").attr("src", results1.rows.item(4).imagenM);
+                            $("#img6").attr("src", results1.rows.item(5).imagenM);
+                            $("#img7").attr("src", results1.rows.item(6).imagenM);
+                            $("#img8").attr("src", results1.rows.item(7).imagenM);
+                            $("#img9").attr("src", results1.rows.item(8).imagenM);			
+			             });
+            		});	 
+                    
+                    /* == LLAMAMOS EL POPUP == */
+                    $(".btnQuest").bind('click', function(){
+                        $.mobile.loading('show', {text:'Loading...',textVisible: true, html:"<span class='ui-bar ui-overlay-c ui-corner-all'><img style='margin-left: 55px;' src='images/miller-loader.png'><h2 style='margin-left:47px;'>loading...</h2></span>"});
+                        $('#cmbAnswer').addClass('ui-disabled');
+                        $( "#intentGames" ).val('3');
+                        $('#intentos').text('3 CHANCES');
+                        $('#btnAnsw').removeClass('ui-disabled');
+                        DeleteRandomDrop();
+                        RandomDropLogos();
+                        var id       = $(this).attr('id');
+                        id           = id.substring(3,id.length);
+                        var src      = $(this).attr('src');
+                        $("#questLogo").attr("src", src);
+                        $('#results').attr('src', 'images/results/question.png');
+                        
+                        //Le damos Reset al combo
+                        var cmbAnswer = $('#cmbAnswer');
+                        cmbAnswer.val('0optLogos').attr('selected', true).siblings('option').removeAttr('selected');
+                        cmbAnswer.selectmenu("refresh", true);
+                        
+                        db.transaction(function (selects) {				      
+                		    db = openDatabase(dbname, dbversion, dbdisplayName, 50 * 1024);
+                            //Seleccionamos el random clickeado
+                            SQL = "SELECT E.nombre_equipo, R.id_equipo FROM EQUIPO AS E INNER JOIN RANDOM AS R ON E.id_equipo = R.id_equipo WHERE R.id_random = ?";
+                			selects.executeSql(SQL, [id], function (selects, results1){
+                                //Guardamos los hidden para luego
+    							$("#answer").val(results1.rows.item(0).nombre_equipo);
+                                $("#equipo").val(results1.rows.item(0).id_equipo);
+                                $("#random").val(id);		
+    			            });
+                            
+                            //Seleccionamos los random para el dropdown
+                            SQL = "SELECT E.nombre_equipo FROM EQUIPO AS E INNER JOIN RANDOMDROP AS R ON E.id_equipo = R.id_equipo WHERE R.id_equipo <> ?";
+                            selects.executeSql(SQL, [$("#equipo").val()], function (selects, results2){
+                                //Llenamos el array con el resultado
+                                var ArregloLogos = new Array();
+    							ArregloLogos[0] = results2.rows.item(0).nombre_equipo;
+    							ArregloLogos[1] = results2.rows.item(1).nombre_equipo;
+    							ArregloLogos[2] = results2.rows.item(2).nombre_equipo;
+    							ArregloLogos[3] = results2.rows.item(3).nombre_equipo;
+    							ArregloLogos[4] = results2.rows.item(4).nombre_equipo;
+                                ArregloLogos[5] = results2.rows.item(5).nombre_equipo;
+    							ArregloLogos[6] = $("#answer").val();
+                                
+                                //Realizamos los aleatoreos, para mostrar en diferente posicion la Respuesta
+    							var numAleatorios = [];
+								var max = 6;
+								var aleatorio = 0;  
+								var j =1;    
+								for (i = 0; i <= 5; i++){
+									do {
+										aleatorio = Math.floor((Math.random()*max)+1);
+									} while ($.inArray(aleatorio,numAleatorios)!="-1");
+										numAleatorios.push(aleatorio);
+										$("#"+j+"optLogos").text(ArregloLogos[aleatorio]);
+										j++;                                        
+								}
+                            });	
+                        });
+                        setTimeout(
+                            function(){
+                                $.mobile.loading('hide');
+                                $('#cmbAnswer').removeClass('ui-disabled');
+                            }
+                        ,2500);
+                    });
+                    
+                    /* == Boton Respuesta == */
+                    $('#btnAnsw').bind('click', function(){
+                        var answer    = $('#answer').val();
+                        var cmbAnswer = $('#cmbAnswer option:selected').text();
+                        //Evaluamos respuesta para mostrar resultado
+                        if (answer == cmbAnswer){
+							
+                            $('#intentos').text('3 CHANCES');
+                            $(this).addClass('ui-disabled');
+                            $('#results').attr('src', 'images/results/success.png');
+                            var img = $('#random').val();
+                            //Seleccionamos la imagen para mostrar segun resultado
+                            db.transaction(function (selects) {				      
+                                db = openDatabase(dbname, dbversion, dbdisplayName, 50 * 1024);
+                                SQL = "SELECT E.imagenB, E.imagenC FROM EQUIPO AS E INNER JOIN RANDOM AS R ON E.id_equipo = R.id_equipo WHERE R.id_random = ?";
+                    			selects.executeSql(SQL, [img], function (selects, results1){
+        							$('#questLogo').attr('src', results1.rows.item(0).imagenB);
+                                    $('#img'+img).attr('src', results1.rows.item(0).imagenC);	
+        			            });          
+                            });
+                            
+                            //Quitamos los link para no poder realizar clic
+                            $('#btn'+img).removeAttr('href');
+                            $('#img'+img).attr('class');
+                            $('#btn'+img).append('<img class="check" src="images/results/correct.png" style="left: 155px;position: relative;top: 50px;width: 28px;" />');
+                            playAudio('audios/fine.mp3');
+                            setTimeout(
+                                function(){
+                                    $('#popupImg1').popup("close");
+                                }
+                            ,1000);                
+                        } else {
+							playAudio('audios/error.mp3');
+                            $('#results').attr('src', 'images/results/error.png');
+                            //Restamos los intentos si son incorrectos
+                            var num = $( "#intentGames" ).val();
+                            var res = num - 1;
+                            var sho = '' + res + ' CHANCES';
+							$('#intentos').text(sho);
+                            $("#intentGames").val(res);
+                            if ($( "#intentGames" ).val() == 0) {
+                                //Desabilitamos el boton
+                                $(this).addClass('ui-disabled');
+                                var img = $('#random').val();
+                                //Seleccionamos la imagen para mostrar segun resultado
+                                db.transaction(function (selects) {				      
+                                    db = openDatabase(dbname, dbversion, dbdisplayName, 50 * 1024);
+                                    SQL = "SELECT E.imagenC FROM EQUIPO AS E INNER JOIN RANDOM AS R ON E.id_equipo = R.id_equipo WHERE R.id_random = ?";
+                        			selects.executeSql(SQL, [img], function (selects, results1){
+                                        $('#img'+img).attr('src', results1.rows.item(0).imagenC);	
+            			            });          
+                                });
+                                
+                                //Quitamos los link para no poder realizar clic
+                                $('#btn'+img).removeAttr('href');
+                                $('#img'+img).attr('class');
+                                $('#btn'+img).append('<img class="check" src="images/results/fail.png" style="left: 155px;position: relative;top: 50px;width: 28px;" />');
+                                setTimeout(
+                                    function(){
+                                        $('#popupImg1').popup("close");
+                                    }
+                                ,1000);
+                            } 
+                        }
+                    });	
+                    
+                    /* == Close del Boton == */
+                    $('#closePopup').bind('click', function(){
+                        //Agregamos los intentos
+                        $('#intentos').text('3 CHANCES');
+                    });	
+                    
+                    /* == Nuevo Juego == */
+                    $('#newGame').bind('click', function(){
+                        //Removemos los ckecks
+                        $('.check').remove();
+                        $("#mod1").removeClass("parte1Menu");
+                        $("#mod2").removeClass("parte1Menu");
+                        
+                        //Agregamos los href a los links desabilitados
+                        $('#btn1').attr('href','#popupImg1');
+                        $('#btn2').attr('href','#popupImg1');
+                        $('#btn3').attr('href','#popupImg1');
+                        $('#btn4').attr('href','#popupImg1');
+                        $('#btn5').attr('href','#popupImg1');
+                        $('#btn6').attr('href','#popupImg1');
+                        $('#btn7').attr('href','#popupImg1');
+                        $('#btn8').attr('href','#popupImg1');
+                        $('#btn9').attr('href','#popupImg1');
+                        
+                        //Agregamos los class a los links desabilitados
+                        $('#img1').attr('class','btnQuest styleImg');
+                        $('#img2').attr('class','btnQuest styleImg');
+                        $('#img3').attr('class','btnQuest styleImg');
+                        $('#img4').attr('class','btnQuest styleImg');
+                        $('#img5').attr('class','btnQuest styleImg');
+                        $('#img6').attr('class','btnQuest styleImg');
+                        $('#img7').attr('class','btnQuest styleImg');
+                        $('#img8').attr('class','btnQuest styleImg');
+                        $('#img9').attr('class','btnQuest styleImg');
+                        
+                        //Reiniciamos los Randons y todos los elementos
+                        DeleteRandom();
+                        Random();
+                        db.transaction(function (selects) {				      
+                            db = openDatabase(dbname, dbversion, dbdisplayName, 50 * 1024);
+                            SQL = "SELECT E.imagenM FROM RANDOM AS R INNER JOIN EQUIPO AS E ON E.id_equipo = R.id_equipo";
+                			selects.executeSql(SQL, [], function (selects, results1){
+    							$("#img1").attr("src", results1.rows.item(0).imagenM);
+                                $("#img2").attr("src", results1.rows.item(1).imagenM);
+                                $("#img3").attr("src", results1.rows.item(2).imagenM);
+                                $("#img4").attr("src", results1.rows.item(3).imagenM);
+                                $("#img5").attr("src", results1.rows.item(4).imagenM);
+                                $("#img6").attr("src", results1.rows.item(5).imagenM);
+                                $("#img7").attr("src", results1.rows.item(6).imagenM);
+                                $("#img8").attr("src", results1.rows.item(7).imagenM);
+                                $("#img9").attr("src", results1.rows.item(8).imagenM);			
+    			             });
+                		});	
+                        //Transicion hacia el inicio
+                        $.mobile.changePage( "#page14", { transition: "slide"} );
+                    });	     
+                });
+            </script>
+            <!-- /SCRIPTS DE LOS ELEMENTOS -->
+            <!-- ESTILO DE LOS ELEMENTOS -->
+            <style>
+                .styleImg {
+                    width: 108px;
+                    position: absolute;
+                    left: 50%;
+                    margin-left: 50px;
+                    top: 0px;                }
+                
+                .styleDivLeft {
+                    padding: 10px 80px;
+                    width: 50px;
+                   height: 90px;
+                   position: relative;
+                   background-color: none;
+                    margin-top: 30px;
+                }
+                .styleDivRigth {
+                    padding: 10px 0px;
+                    width: 50px;
+                    height: 90px;
+                    position: relative;
+                    background-color: none;
+                    margin-top: 30px;
+                    margin-left: -45px;
+                }
+                .styleDivCenter {
+                    padding: 10px 10px;
+                    height: 90px;
+                    position: relative;
+                    background-color: none;
+                    margin-top: 30px;
+                    margin-right: 230px;
+                }
+            </style>
+            <!-- /ESTILO DE LOS ELEMENTOS -->
+            <div data-theme="a" data-role="header" data-position="fixed">
+                <a id="newGame" onClick="playAudio('audios/pop.mp3');" data-role="button" data-icon="star" data-iconpos="right" class="ui-btn-right">
+                    NEW GAME
+                </a>
+                <h3>
+                    Logos Quiz Lite
+                </h3>
+            </div>
+            <div data-role="content">
+                <div class="ui-grid-b">
+                    <div class="ui-block-a">
+                        <div class="styleDivLeft">
+                            <a onClick="playAudio('audios/pop.mp3');" id="btn1" href="#popupImg1" data-rel="popup" data-transition="fade">
+								<img id="img1" class="btnQuest styleImg" src="" />
+							</a>
+						</div>
+                    </div>
+                    <div class="ui-block-b">
+                        <div class="styleDivCenter" >
+                            <a onClick="playAudio('audios/pop.mp3');" id="btn2" href="#popupImg1" data-rel="popup" data-transition="fade">
+                                <img id="img2" class="btnQuest styleImg" src="" />
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ui-block-c">
+                        <div class="styleDivRigth" >
+                            <a onClick="playAudio('audios/pop.mp3');" id="btn3" href="#popupImg1" data-rel="popup" data-transition="fade">
+                                <img id="img3" class="btnQuest styleImg" src="" />
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ui-block-a">
+                        <div class="styleDivLeft" >
+                            <a onClick="playAudio('audios/pop.mp3');" id="btn4" href="#popupImg1" data-rel="popup" data-transition="fade">
+                                <img id="img4" class="btnQuest styleImg" src="" />
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ui-block-b">
+                        <div class="styleDivCenter" >
+                            <a onClick="playAudio('audios/pop.mp3');" id="btn5" href="#popupImg1" data-rel="popup" data-transition="fade">
+                                <img id="img5" class="btnQuest styleImg" src="" />
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ui-block-c">
+                        <div class="styleDivRigth" >
+                            <a onClick="playAudio('audios/pop.mp3');" id="btn6" href="#popupImg1" data-rel="popup" data-transition="fade">
+                                <img id="img6" class="btnQuest styleImg" src=""  />
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ui-block-a">
+                        <div class="styleDivLeft" >
+                            <a onClick="playAudio('audios/pop.mp3');" id="btn7" href="#popupImg1" data-rel="popup" data-transition="fade">
+                                <img id="img7" class="btnQuest styleImg" src=""  />
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ui-block-b">
+                        <div class="styleDivCenter" >
+                            <a onClick="playAudio('audios/pop.mp3');" id="btn8" href="#popupImg1" data-rel="popup" data-transition="fade">
+                                <img id="img8" class="btnQuest styleImg" src="" />
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ui-block-c">
+                        <div class="styleDivRigth" >
+                            <a onClick="playAudio('audios/pop.mp3');" id="btn9" href="#popupImg1" data-rel="popup" data-transition="fade">
+                                <img id="img9" class="btnQuest styleImg" src="" />
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <input id="answer" value="" type="hidden" />
+                <input id="random" value="" type="hidden" />
+                <input id="equipo" value="" type="hidden" />
+                <input id="intentGames" value="" type="hidden"/>
+            </div>
+            <!-- ====== POPUP 1 ====== -->
+			<div data-role="popup" id="popupImg1" style="width:470px; height:180px; padding: 10px 20px; text-align: center;" data-overlay-theme="a" data-position-to="window">
+                <a id="closePopup" onClick="playAudio('audios/pop.mp3');" href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">CLOSE</a>
+				<div style="background-color: #fbfbfb; border: 1px solid #b8b8b8;padding:5px;width: 130PX;float: left;">
+                    <img id="questLogo" src="" style="width: 128px; height: 128px;"/>
+                </div>
+                <div data-role="fieldcontain" style="width: 290px;float: left;position: absolute;left: 200px;">
+                    <select onClick="playAudio('audios/pop.mp3');" name="" data-mini="true" id="cmbAnswer" style="text-transform:uppercase;">
+						<option id="0optLogos" value="0optLogos">CHOOSE AN OPTION</option>
+						<option id="1optLogos"></option>
+						<option id="2optLogos"></option>
+						<option id="3optLogos"></option>
+						<option id="4optLogos"></option>
+						<option id="5optLogos"></option>
+						<option id="6optLogos"></option>
+					</select>
+                </div>
+                <div style="clear: both;position: relative;top: 10px;left: -165px;">
+                    <p>
+                        <b id="intentos"></b>
+                    </p>
+                </div>
+                <img id="results" src="images/results/question.png" style="width:48px;height:48px;clear: both;position: relative;top: -115px;left: 88px;"/>
+                <br />
+                <a onClick="playAudio('audios/pop.mp3');" id="btnAnsw" data-role="button" data-inline="true" href="#" style="position: relative;top: -110px;left: 84px;">
+                    CHECK IT
+                </a>
+			</div>
+            <!-- ====== /POPUP 1 ====== -->
+        </div>
+    </body>
+</html>
